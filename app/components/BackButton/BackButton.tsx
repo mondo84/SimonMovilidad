@@ -10,6 +10,7 @@ import {
   ArrowLeftStartOnRectangleIcon,
   ArrowRightStartOnRectangleIcon,
   QuestionMarkCircleIcon,
+  ChartPieIcon,
 } from "@heroicons/react/24/outline";
 
 const BackButton = ({
@@ -41,6 +42,9 @@ const BackButton = ({
         return (
           <ArrowRightStartOnRectangleIcon className="size-6" title={Title} />
         );
+
+      case "ChartPieIcon":
+        return <ChartPieIcon className="size-6" title={Title} />;
 
       default:
         return <QuestionMarkCircleIcon className="size-6" title="Not Found" />;

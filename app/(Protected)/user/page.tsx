@@ -129,43 +129,39 @@ const UserPage = () => {
       >
         <div className="p-4 dark:bg-black/40">
           <div className="flex items-center mb-1 gap-1 justify-between">
-            {!userList?.length ? (
-              <div className="p-0">
-                <Label
-                  htmlFor="inactive-users"
-                  className="text-sm me-2 cursor-pointer !gap-0"
-                >
-                  <Switch
-                    onCheckedChange={onCheckedChange}
-                    id="inactive-users"
-                    className="cursor-pointer"
-                  />
-                  <span className="ps-2">
-                    {getUserInactive ? "Activos/Inactivos" : "Solo activos"}
-                  </span>
+            <div className="p-0">
+              <Label
+                htmlFor="inactive-users"
+                className="text-sm me-2 cursor-pointer !gap-0"
+              >
+                <Switch
+                  onCheckedChange={onCheckedChange}
+                  id="inactive-users"
+                  className="cursor-pointer"
+                />
+                <span className="ps-2">
+                  {getUserInactive ? "Activos/Inactivos" : "Solo activos"}
+                </span>
 
-                  {getUserInactive ? (
-                    <>
-                      <GenericTooltip text="Activo">
-                        <CheckCircle className="text-green-500 p-0.5 ms-2" />
-                      </GenericTooltip>
+                {getUserInactive ? (
+                  <>
+                    <GenericTooltip text="Activo">
+                      <CheckCircle className="text-green-500 p-0.5 ms-2" />
+                    </GenericTooltip>
 
-                      <GenericTooltip text="Inactivo" side="bottom">
-                        <XCircle className="text-red-500 p-0.5" />
-                      </GenericTooltip>
-                    </>
-                  ) : (
-                    <>
-                      <GenericTooltip text="Activo" side="right">
-                        <CheckCircle className="text-green-500 p-0.5 ms-2" />
-                      </GenericTooltip>
-                    </>
-                  )}
-                </Label>
-              </div>
-            ) : (
-              <div></div>
-            )}
+                    <GenericTooltip text="Inactivo" side="bottom">
+                      <XCircle className="text-red-500 p-0.5" />
+                    </GenericTooltip>
+                  </>
+                ) : (
+                  <>
+                    <GenericTooltip text="Activo" side="right">
+                      <CheckCircle className="text-green-500 p-0.5 ms-2" />
+                    </GenericTooltip>
+                  </>
+                )}
+              </Label>
+            </div>
 
             <div className="p-0">
               <GenericControls
@@ -183,7 +179,7 @@ const UserPage = () => {
             </div>
           </div>
           <div>
-            {!userList?.length ? (
+            {userList?.length ? (
               <div>
                 <ListComponent
                   data={userList}

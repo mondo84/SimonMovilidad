@@ -47,7 +47,7 @@ const data: MenuListI[] = [
     active: true,
     pathUrl: "/dashboard",
     menuId: 2,
-    iconName: "Cog8ToothIcon",
+    iconName: "ChartPieIcon",
     role: {
       roleId: 1,
       description: "Admin",

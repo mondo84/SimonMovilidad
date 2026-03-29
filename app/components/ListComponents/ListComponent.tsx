@@ -36,6 +36,7 @@ const ListComponent = ({
           rowStyle={(row) => rowStyle(row)}
           columnStyle={(col) => columnStyle(col)}
           init={init}
+          filterValues={() => null}
         />
       </div>
     </WillowDark>
