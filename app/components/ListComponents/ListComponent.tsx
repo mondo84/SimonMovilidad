@@ -16,7 +16,7 @@ const ListComponent = ({
   rowStyle = () => "",
   columnStyle = () => "",
 }: {
-  data: UserDto[] | undefined;
+  data: any[] | undefined;
   columns: IColumnConfig[];
   init?: (api: IApi) => void;
   styleWrapperTable?: string;

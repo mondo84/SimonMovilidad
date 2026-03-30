@@ -38,7 +38,6 @@ const UserPage = () => {
     userList = [];
   }
 
-  console.log("LISTADO DE USUARIOS: ", userList);
   // const createObj = useCreateUsers();
   // const deleteObj = useDeleteUser();
   // useEffect(() => {
@@ -92,13 +91,6 @@ const UserPage = () => {
       width: 80,
       header: "Id User",
       css: "text-custom",
-      // cell: (row) => {
-      //   return (
-      //     <div className="bg-red-600 m-0 p-0 w-full text-right">
-      //       {row.row.User_id}
-      //     </div>
-      //   );
-      // },
     },
     { id: "First_name", width: 150, flexgrow: 1, header: "First Name" },
     { id: "Last_name", width: 150, flexgrow: 1, header: "Last Name" },
