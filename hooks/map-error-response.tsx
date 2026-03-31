@@ -5,7 +5,7 @@ import { toast as sonnerToast } from "sonner";
 type MapErrorRespType = {
   title: string;
   error?: string;
-  errors?: object;
+  errors?: Record<string, string[]>;
 };
 
 const MapErrorResponse = (args: MapErrorRespType) => {
@@ -19,7 +19,7 @@ const MapErrorResponse = (args: MapErrorRespType) => {
         {Object.values(errors ?? {})
           .flat()
           .map((el, index) => {
-            return <li key={index}>{el as string}</li>;
+            return <li key={index}>{el}</li>;
           })}
       </ul>
     ),

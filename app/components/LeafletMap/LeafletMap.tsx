@@ -6,7 +6,7 @@ import {
   useMap,
   Tooltip,
 } from "react-leaflet";
-import L from "leaflet";
+import L, { Marker as M } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useRef } from "react";
 
@@ -32,12 +32,12 @@ export type NewPosition = {
 };
 
 type LeafletMapProps = {
-  message: "";
-  position: [0, 0];
+  message?: string;
+  position: [number, number] | null;
 };
 
 const LeafletMap = ({ position, message }: LeafletMapProps) => {
-  const markerRef = useRef(null);
+  const markerRef = useRef<M>(null);
 
   useEffect(() => {
     if (markerRef.current) {
@@ -107,13 +107,15 @@ const LeafletMap = ({ position, message }: LeafletMapProps) => {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={position} icon={carIcon} ref={markerRef}>
         <Tooltip key={message} direction="top" offset={[0, -10]} permanent>
-          {message}
+          {message
+            ? message
+            : `Actual: Lat: ${position[0]}, Long: ${position[1]}`}
         </Tooltip>
       </Marker>
     </MapContainer>
   ) : (
     <>
-      <span>Error inicializando el mapa. No se hallaron coordenadas</span>
+      <span>Espere mientras llegan las coordenadas al mapa ...</span>
     </>
   );
 };

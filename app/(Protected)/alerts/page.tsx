@@ -17,7 +17,12 @@ const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
 });
 
-const resetSelected = {
+type SelectedRow = {
+  message: string;
+  position: [number, number];
+};
+
+const resetSelected: SelectedRow = {
   message: "",
   position: [0, 0],
 };
