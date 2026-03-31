@@ -1,4 +1,3 @@
-// "use client";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +31,7 @@ import {
 export type UserFormType = {
   styleInput: string;
   getSelectedUser: UserDto | null;
+  isSaveMode: { open: boolean };
   onClose: () => void;
 };
 
@@ -50,10 +50,10 @@ const UserForm = ({
     control,
     formState: { errors },
   } = useForm<UpdateUserDto>({
-    ...formConfig, // Abstraer configuracion. devuelve objeto.
+    ...formConfig,
     resolver: zodResolver(userSchema),
     defaultValues: {
-      ...emptyUser, // Spread mando configuracion y sobreescribo Role_Id.
+      ...emptyUser,
       Role_Id: getSelectedUser?.Role_Id ? String(getSelectedUser?.Role_Id) : "",
     },
   });
@@ -99,7 +99,6 @@ const UserForm = ({
       onClose();
     } else {
       console.log("SAVE: ", data);
-      // createObj.mutate(data);
     }
   };
 
@@ -108,7 +107,6 @@ const UserForm = ({
       <form onSubmit={handleSubmit(onSubmit)}>
         <FieldGroup>
           <div className="gap-2 p-4">
-            {/* <Input type="hidden" {...register("Id")} />*/}
             <div className="p-4 pt-1 rounded">
               <Label htmlFor="name-1" className="text-lg">
                 {!getSelectedUser ? (
@@ -203,13 +201,13 @@ const UserForm = ({
                         <SelectGroup>
                           <SelectLabel>Roles</SelectLabel>
                           <SelectItem className="text-xs" value="1">
-                            Administrador
+                            Admin
                           </SelectItem>
                           <SelectItem className="text-xs" value="2">
-                            Usuario II
+                            User
                           </SelectItem>
                           <SelectItem className="text-xs" value="3">
-                            Usuario I
+                            Viewer
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -290,6 +288,7 @@ const UserForm = ({
                     />
                   </Field>
                 </div>
+
                 <div className="p-4 pb-2 pt-0">
                   <Field className="gap-1">
                     <Label htmlFor="name-5">
@@ -369,5 +368,4 @@ const UserForm = ({
   );
 };
 
-// UserForm.displayName = "UserForm";
 export default UserForm;

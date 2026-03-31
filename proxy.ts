@@ -12,9 +12,9 @@ const {
 
 // Simulación de rutas por rol (mover a backend/cache real)
 const roleRoutes: Record<string, string[]> = {
-  Admin: ["/home", "/user", "/configuracion"],
-  User: ["/home", "/ganancia"],
-  Viewer: ["/home"],
+  Admin: ["/home", "/user", "/dashboard", "/configuracion"],
+  User: ["/home", "/user", "/dashboard"],
+  Viewer: ["/home", "/user", "/dashboard"],
 };
 
 export async function proxy(req: NextRequest) {
@@ -28,6 +28,11 @@ export async function proxy(req: NextRequest) {
   const authRoutes = ["/login", "/register"];
   const isAuthRoute = NextReqMapList(authRoutes, pathname);
   const isPubRoute = NextReqMapList(pubRoutes, pathname);
+
+  // Ignorar imágenes públicas
+  if (pathname.startsWith("/image")) {
+    return NextResponse.next();
+  }
 
   if (!isAuth && !isPubRoute) {
     return NextResponseRedirect("/login", req);

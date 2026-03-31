@@ -4,8 +4,10 @@ export interface MenuListI {
   title: string;
   iconName?: string;
   active: boolean;
-  role: {
-    roleId: number;
-    description: string;
-  };
+  roles: RoleType[];
 }
+
+type RoleType = {
+  roleId: number;
+  description: string;
+};

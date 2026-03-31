@@ -11,12 +11,19 @@ import LineCharJs from "@/app/components/LineCharJs/LineCharJs";
 import { sensorListMap } from "@/modules/dashboard/hooks/map-sensor-list";
 import { useSensorDataList } from "@/modules/dashboard/hooks/useDashboard";
 import { saveAlerts, savePosition } from "@/lib/db";
+import useIsAuthHook from "@/modules/auth/hooks/useAuth";
+import { GLOBAL_CONST } from "@/lib/global-const/global-const";
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
 });
 
+const {
+  SOCKET_EVENTS_NAME: { LOCATION_UPDATE, LOW_FUEL_ALERT },
+} = GLOBAL_CONST;
+
 const DashboardPage = () => {
+  const { session } = useIsAuthHook();
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const isStartingRef = useRef(false); // controla el start().
   const isMountedRef = useRef(true);
@@ -111,7 +118,7 @@ const DashboardPage = () => {
     document.addEventListener("visibilitychange", handleVisibility);
 
     // ================  Eventos ==========================================
-    connection.on("LOCATION_UPDATE", async (sensorList: SensorType[]) => {
+    connection.on(LOCATION_UPDATE, async (sensorList: SensorType[]) => {
       if (sensorList && sensorList.length) {
         const actualPosition = sensorList[sensorList.length - 1];
         await savePosition(actualPosition); // Guarda en cache.
@@ -120,13 +127,16 @@ const DashboardPage = () => {
       }
     });
 
-    connection.on(
-      "LOW_FUEL_ALERT",
-      async ({ vehicleId, remainingHours }: FuelAlertType) => {
-        alert("Combustible bajo");
-        await saveAlerts({ vehicleId, remainingHours });
-      },
-    );
+    if (session && session?.user.role === "Admion") {
+      connection.on(
+        LOW_FUEL_ALERT,
+        async ({ vehicleId, remainingHours }: FuelAlertType) => {
+          alert("Combustible bajo");
+          await saveAlerts({ vehicleId, remainingHours });
+        },
+      );
+    }
+
     // ==================================================================
 
     return () => {
@@ -168,8 +178,7 @@ const DashboardPage = () => {
         <div className="flex-1 min-h-0">
           <div className="w-full h-full flex flex-col">
             <div className="grid grid-cols-7 bg-gray-800 text-white text-sm font-semibold p-2 text-xs">
-              <div>ID</div>
-              <div>N° Vehículo</div>
+              <div>ID Dispositivo</div>
               <div>Lat</div>
               <div>Long</div>
               <div>Velocidad</div>
@@ -188,7 +197,6 @@ const DashboardPage = () => {
                     key={index}
                     className="grid grid-cols-7 border-b text-sm p-2 hover:bg-sky-500/30 transition cursor-pointer text-xs"
                   >
-                    <div>{item.id}</div>
                     <div>{item.Vehicle_id}</div>
                     <div>{item.Lat}</div>
                     <div>{item.Long}</div>

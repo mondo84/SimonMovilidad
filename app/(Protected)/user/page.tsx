@@ -38,19 +38,6 @@ const UserPage = () => {
     userList = [];
   }
 
-  // const createObj = useCreateUsers();
-  // const deleteObj = useDeleteUser();
-  // useEffect(() => {
-  //   if (isError) {
-  //     const err = error; // as ErrorType;
-
-  //     if (err?.status === UNAUTHORIZED) {
-  //       signOut({ callbackUrl: "/login" });
-  //     }
-  //   }
-  //   console.log("ERROR: ", error);
-  // }, [isError, error]);
-
   const closeModal = () => {
     setSelectedUser(null); //  Limpia fila seleccionada.
     setIsOpenForm({ open: false }); // Cierra modal form User.
@@ -63,8 +50,6 @@ const UserPage = () => {
   };
 
   const init = (api: IApi): void => {
-    // Si se necesita acceder al API fuera de este ámbito, se puede usar useRef para almacenarlo.
-    // gridApi.current = api;
     api.on("select-row", (ev) => {
       const rowSelected = api.getStores().data.getRow(ev.id) as UserDto;
       setSelectedUser(rowSelected);
@@ -77,8 +62,6 @@ const UserPage = () => {
     setIsOpenForm({ open: true });
     setSelectedUser(null);
     setStatusBtn({ isDisable: true });
-
-    // Quitar los estilos a la fila seleccionada.
   };
 
   const onPrintClickFn = () => {
@@ -214,6 +197,7 @@ const UserPage = () => {
                 props={{
                   styleInput,
                   getSelectedUser,
+                  isSaveMode: getIsOpenForm,
                   onClose: closeModal,
                 }}
               />

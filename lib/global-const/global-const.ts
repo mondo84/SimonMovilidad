@@ -25,4 +25,8 @@ export const GLOBAL_CONST = {
     ADMIN: "Admin",
     USER: "User",
   },
+  SOCKET_EVENTS_NAME: {
+    LOCATION_UPDATE: "LOCATION_UPDATE",
+    LOW_FUEL_ALERT: "LOW_FUEL_ALERT",
+  },
 };

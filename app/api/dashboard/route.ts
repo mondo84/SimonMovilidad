@@ -54,3 +54,29 @@ export const GET = async (req: NextRequest) => {
     );
   }
 };
+
+export const POST = async (req: NextRequest) => {
+  const accessToken = await ValidateToken(req);
+  try {
+    const body = await req.json();
+
+    console.log("Llego el patoooo", `${URL_API}/api/sensor/list/alerts`);
+    const response = await fetch(`${URL_API}/api/sensor/list/alerts`, {
+      method: req.method,
+      headers: {
+        "Content-Type": APPLICATION_JSON,
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json(
+      { message: `${INTERNAL_ERROR}: ${error}` },
+      { status: INTERNAL_SERVER_ERROR },
+    );
+  }
+};

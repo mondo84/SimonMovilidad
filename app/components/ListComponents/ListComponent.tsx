@@ -1,4 +1,3 @@
-import { UserDto } from "@/modules/users/types/UserDto";
 import {
   Grid,
   IApi,

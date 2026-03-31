@@ -2,14 +2,14 @@ import { apiClient } from "@/lib/api-client";
 import { env } from "@/lib/env";
 import { GLOBAL_CONST } from "@/lib/global-const/global-const";
 import { ApiResponseTypeG } from "@/lib/responses/api-response.type";
-import { SensorType } from "../types/SensorType";
+import { AlarmReqType, SensorType } from "../types/SensorType";
 
 const {
   API: { DASHBOARD_ROUTE },
 } = env;
 const {
   HTTP: {
-    METHOD: { GET },
+    METHOD: { GET, POST },
   },
 } = GLOBAL_CONST;
 
@@ -21,7 +21,17 @@ export const dashboardService = {
         method: GET,
       },
     );
-    console.log("Response: ", resp);
+    return resp;
+  },
+  getAlarmList: (dto: AlarmReqType) => {
+    console.log("MUTATION ------------ : ", `${DASHBOARD_ROUTE}`);
+    const resp = apiClient<ApiResponseTypeG<AlarmReqType[]>>(
+      `${DASHBOARD_ROUTE}`,
+      {
+        method: POST,
+        body: dto,
+      },
+    );
     return resp;
   },
 };
