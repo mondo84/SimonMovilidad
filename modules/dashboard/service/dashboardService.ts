@@ -24,7 +24,6 @@ export const dashboardService = {
     return resp;
   },
   getAlarmList: (dto: AlarmReqType) => {
-    console.log("MUTATION ------------ : ", `${DASHBOARD_ROUTE}`);
     const resp = apiClient<ApiResponseTypeG<AlarmReqType[]>>(
       `${DASHBOARD_ROUTE}`,
       {

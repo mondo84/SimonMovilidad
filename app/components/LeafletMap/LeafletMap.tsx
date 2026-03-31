@@ -1,23 +1,14 @@
 "use client";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
-import L from "leaflet";
-import * as signalR from "@microsoft/signalr";
-import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
-import { env } from "@/lib/env";
-
-const URL_API = env.swaggerApi;
-// const URL_API = env.swaggerApiDev;
-
 import {
-  clearPositions,
-  getPositions,
-  saveAlerts,
-  savePosition,
-} from "@/lib/db";
-import { useSession } from "next-auth/react";
-import FetchUtil from "@/hooks/fetch-util";
-import { SensorType } from "@/modules/dashboard/types/SensorType";
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMap,
+  Tooltip,
+} from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useEffect, useRef } from "react";
 
 const ChangeView = ({ center }: { center: [number, number] }) => {
   const map = useMap();
@@ -40,25 +31,19 @@ export type NewPosition = {
   Timestamp: string;
 };
 
-// const syncPositions = async (accessToken?: string) => {
-//   if (!accessToken) return;
-//   const URL = `${URL_API}/api/sensor/data`;
-
-//   const data = await getPositions();
-//   if (!data.length) return;
-
-//   for (const pos of data) {
-//     await FetchUtil(URL, "POST", accessToken, pos);
-//   }
-
-//   await clearPositions();
-// };
-
 type LeafletMapProps = {
-  position: [number, number] | null;
+  message: "";
+  position: [0, 0];
 };
 
-const LeafletMap = ({ position }: LeafletMapProps) => {
+const LeafletMap = ({ position, message }: LeafletMapProps) => {
+  const markerRef = useRef(null);
+
+  useEffect(() => {
+    if (markerRef.current) {
+      markerRef.current.openPopup();
+    }
+  }, [message]);
   // const session = useSession();
   // const [position, setPosition] = useState<[number, number]>([
   //   10.9243697, -74.797705,
@@ -112,10 +97,19 @@ const LeafletMap = ({ position }: LeafletMapProps) => {
   // }, [position]);
 
   return position ? (
-    <MapContainer center={position} zoom={16} style={{ height: "100%" }}>
+    <MapContainer
+      center={position}
+      zoom={16}
+      style={{ height: "100%" }}
+      key={message}
+    >
       <ChangeView center={position} />
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={position} icon={carIcon} />
+      <Marker position={position} icon={carIcon} ref={markerRef}>
+        <Tooltip key={message} direction="top" offset={[0, -10]} permanent>
+          {message}
+        </Tooltip>
+      </Marker>
     </MapContainer>
   ) : (
     <>

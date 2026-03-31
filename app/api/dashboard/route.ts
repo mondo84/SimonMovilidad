@@ -59,8 +59,6 @@ export const POST = async (req: NextRequest) => {
   const accessToken = await ValidateToken(req);
   try {
     const body = await req.json();
-
-    console.log("Llego el patoooo", `${URL_API}/api/sensor/list/alerts`);
     const response = await fetch(`${URL_API}/api/sensor/list/alerts`, {
       method: req.method,
       headers: {
