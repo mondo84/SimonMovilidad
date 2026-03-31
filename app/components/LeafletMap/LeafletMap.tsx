@@ -107,9 +107,14 @@ const LeafletMap = ({ position, message }: LeafletMapProps) => {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={position} icon={carIcon} ref={markerRef}>
         <Tooltip key={message} direction="top" offset={[0, -10]} permanent>
-          {message
-            ? message
-            : `Actual: Lat: ${position[0]}, Long: ${position[1]}`}
+          {message ? (
+            <div>
+              <div>{message}</div>
+              <div>{`Actual: Lat: ${position[0]}, Long: ${position[1]}`}</div>
+            </div>
+          ) : (
+            <div>{`Actual: Lat: ${position[0]}, Long: ${position[1]}`}</div>
+          )}
         </Tooltip>
       </Marker>
     </MapContainer>
