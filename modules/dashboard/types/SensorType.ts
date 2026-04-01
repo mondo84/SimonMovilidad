@@ -17,12 +17,16 @@ export type FuelAlertType = {
   remainingHours: number;
 };
 
-// export type AlarmReqType = {
-//   Vehicle_id: string;
-//   Message: string;
-//   Active: true;
-//   CreatedAt: string;
-// };
+export type AlarmRespType = {
+  Id: number;
+  Vehicle_id: string;
+  Message: string;
+  Lat: number;
+  Long: number;
+  Active: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type AlarmReqType = {
   vehicleId: string;

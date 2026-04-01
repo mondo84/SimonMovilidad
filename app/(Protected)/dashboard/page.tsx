@@ -4,15 +4,16 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import {
-  FuelAlertType,
+  AlarmRespType,
   SensorType,
 } from "@/modules/dashboard/types/SensorType";
 import LineCharJs from "@/app/components/LineCharJs/LineCharJs";
 import { sensorListMap } from "@/modules/dashboard/hooks/map-sensor-list";
 import { useSensorDataList } from "@/modules/dashboard/hooks/useDashboard";
-import { saveAlerts, savePosition } from "@/lib/db";
+import { getPositions, saveAlerts, savePosition } from "@/lib/db";
 import useIsAuthHook from "@/modules/auth/hooks/useAuth";
 import { GLOBAL_CONST } from "@/lib/global-const/global-const";
+import { useOfflineSync } from "@/hooks/use-offline-sync";
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
@@ -27,11 +28,11 @@ const DashboardPage = () => {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const isStartingRef = useRef(false); // controla el start().
   const isMountedRef = useRef(true);
-
   const { data, isSuccess } = useSensorDataList(false);
   const [sensorList, setSensorList] = useState<SensorType[]>([]);
   const [position, setPosition] = useState<[number, number] | null>(null);
   const DATA_SOURCE = sensorList; // data && data.data ? data.data : [];
+  useOfflineSync(setPosition, setSensorList);
 
   useEffect(() => {
     if (isSuccess && data?.data) {
@@ -121,20 +122,21 @@ const DashboardPage = () => {
     connection.on(LOCATION_UPDATE, async (sensorList: SensorType[]) => {
       if (sensorList && sensorList.length) {
         const actualPosition = sensorList[sensorList.length - 1];
+        console.log("actualPosition ", actualPosition);
         await savePosition(actualPosition); // Guarda en cache.
         setPosition([actualPosition.Lat, actualPosition.Long]); // Actualiza Mapa.
         setSensorList(sensorList); // Actualiza Line.
+
+        const all = await getPositions();
+        console.log("DATOS EN CACHÉ: ", all);
       }
     });
 
-    if (session && session?.user.role === "Admion") {
-      connection.on(
-        LOW_FUEL_ALERT,
-        async ({ vehicleId, remainingHours }: FuelAlertType) => {
-          alert("Combustible bajo");
-          await saveAlerts({ vehicleId, remainingHours });
-        },
-      );
+    if (session && session?.user.role === "Admin") {
+      connection.on(LOW_FUEL_ALERT, async (alarm: AlarmRespType) => {
+        await saveAlerts(alarm);
+        alert("Combustible bajo");
+      });
     }
 
     // ==================================================================

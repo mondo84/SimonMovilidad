@@ -12,6 +12,8 @@ import CellFormatDate from "@/hooks/cell-format-date";
 import dynamic from "next/dynamic";
 import { MapPin } from "lucide-react";
 import { AlarmType } from "../../../modules/dashboard/types/AlarmType";
+import { useOfflineSyncAlarm } from "@/hooks/use-offline-sync-alarm";
+import { AlarmRespType } from "@/modules/dashboard/types/SensorType";
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
@@ -55,7 +57,7 @@ const columns: IColumnConfig[] = [
     },
   },
   {
-    id: "CreatedAt",
+    id: "createdAt",
     width: 150,
     header: "Fecha",
     cell: (row) => CellFormatDate(row),
@@ -71,7 +73,9 @@ const columns: IColumnConfig[] = [
 const AlertsPage = () => {
   const [selectedRow, setSelectedRow] = useState(resetSelected);
 
-  const { data, mutate } = useAlarmList();
+  // const { data, mutate, mutateAsync } = useAlarmList();
+  const { data, mutate, mutateAsync } = useAlarmList();
+  const [offlineData, setOfflineData] = useState<AlarmRespType[]>([]);
 
   const today = new Date();
   const [filters, setFilters] = useState({
@@ -81,6 +85,16 @@ const AlertsPage = () => {
     showActive: true,
     vehicleId: "",
   });
+
+  useOfflineSyncAlarm(
+    mutateAsync,
+    {
+      date: filters.date,
+      showInactive: !filters.showActive,
+      vehicleId: filters.vehicleId,
+    },
+    setOfflineData,
+  );
 
   useEffect(() => {
     mutate({
@@ -135,7 +149,7 @@ const AlertsPage = () => {
         <div className="p-4 dark:bg-black/40 flex">
           <div className="flex-[0.6] min-w-0">
             <ListComponent
-              data={data?.data ?? []}
+              data={navigator.onLine ? (data?.data ?? []) : offlineData}
               columns={columns}
               init={init}
               styleWrapperTable="!h-[calc(100vh-150px)] border border-white/20 border-dotted w-full bg-black/50"

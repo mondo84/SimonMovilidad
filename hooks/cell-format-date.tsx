@@ -1,8 +1,7 @@
 import { ICellProps } from "@svar-ui/react-grid";
-import React from "react";
 
 const CellFormatDate = (row: ICellProps) => {
-  const value = row.row.CreatedAt;
+  const value = row.row.createdAt;
 
   if (!value) return "-";
   const date = new Date(value);

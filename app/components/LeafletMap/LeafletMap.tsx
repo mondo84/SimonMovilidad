@@ -44,57 +44,6 @@ const LeafletMap = ({ position, message }: LeafletMapProps) => {
       markerRef.current.openPopup();
     }
   }, [message]);
-  // const session = useSession();
-  // const [position, setPosition] = useState<[number, number]>([
-  //   10.9243697, -74.797705,
-  // ]);
-
-  // useEffect(() => {
-  //   const handleOffline = async () => {
-  //     const cached = await getPositions();
-
-  //     cached.forEach(({ Lat, Long }: SensorType) => {
-  //       setPosition([Lat, Long]); // Pintar mapa con estado
-  //     });
-  //   };
-
-  //   const handleOnline = async () => {
-  //     const token = session.data?.accessToken ?? undefined;
-  //     await syncPositions(token); // Sincronizar DB.
-  //   };
-
-  //   window.addEventListener("offline", handleOffline);
-  //   window.addEventListener("online", handleOnline);
-
-  //   return () => {
-  //     window.removeEventListener("offline", handleOffline);
-  //     window.removeEventListener("online", handleOnline);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   const connection = new signalR.HubConnectionBuilder()
-  //     //   .withUrl("http://localhost:5010/ws/alerts")
-  //     .withUrl("http://localhost:5010/ws/alerts")
-  //     .withAutomaticReconnect()
-  //     .build();
-
-  //   connection.start().then(() => {
-  //     console.log("Conectado a SignalR...");
-  //   });
-
-  //   connection.on("LOCATION_UPDATE", async (position: SensorType[]) => {
-  //     console.log("LOCALI: ", position);
-
-  //     // await savePosition(position); // Save in chache.
-  //     // setPosition([position.Lat, position.Long]);
-  //     //  animateMove(position, [lat, lng], 1000);
-  //   });
-
-  //   return () => {
-  //     connection.stop();
-  //   };
-  // }, [position]);
 
   return position ? (
     <MapContainer

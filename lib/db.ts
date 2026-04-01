@@ -1,4 +1,5 @@
 import {
+  AlarmRespType,
   FuelAlertType,
   SensorType,
 } from "@/modules/dashboard/types/SensorType";
@@ -11,7 +12,6 @@ const MAX = 50;
 
 let dbInstance: Promise<IDBPDatabase> | null = null;
 
-// 🔥 Inicialización segura (solo cliente)
 const getDB = () => {
   if (typeof window === "undefined") {
     return null; // evita SSR
@@ -23,13 +23,11 @@ const getDB = () => {
         if (!db.objectStoreNames.contains(STORE_POSITION)) {
           db.createObjectStore(STORE_POSITION, {
             keyPath: "id",
-            autoIncrement: true,
           });
         }
         if (!db.objectStoreNames.contains(STORE_ALERT)) {
           db.createObjectStore(STORE_ALERT, {
             keyPath: "id",
-            autoIncrement: true,
           });
         }
       },
@@ -51,10 +49,14 @@ export const savePosition = async (position: SensorType) => {
     await clearPositions();
   }
 
-  await db.add(STORE_POSITION, {
+  const objToSave = {
     ...position,
-    createdAt: new Date(),
-  });
+    id: position.id || crypto.randomUUID(),
+    createdAt: position.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  await db.put(STORE_POSITION, objToSave);
 };
 
 export const getPositions = async (): Promise<SensorType[]> => {
@@ -74,7 +76,7 @@ export const clearPositions = async () => {
 };
 
 // ================= Alerts =================================
-export const saveAlerts = async (alerts: FuelAlertType) => {
+export const saveAlerts = async (alerts: AlarmRespType) => {
   const dbPromise = getDB();
   if (!dbPromise) return;
 
@@ -85,18 +87,22 @@ export const saveAlerts = async (alerts: FuelAlertType) => {
     await clearAlerts();
   }
 
-  await db.add(STORE_ALERT, {
+  const objToSave = {
     ...alerts,
-    createdAt: new Date(),
-  });
+    id: alerts.Id || crypto.randomUUID(),
+    createdAt: alerts.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  await db.put(STORE_ALERT, objToSave);
 };
 
-export const getAlerts = async (): Promise<FuelAlertType[]> => {
+export const getAlerts = async (): Promise<AlarmRespType[]> => {
   const dbPromise = getDB();
   if (!dbPromise) return [];
 
   const db = await dbPromise;
-  return (await db.getAll(STORE_ALERT)) as FuelAlertType[];
+  return (await db.getAll(STORE_ALERT)) as AlarmRespType[];
 };
 
 export const clearAlerts = async () => {

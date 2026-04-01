@@ -2,7 +2,7 @@ import { apiClient } from "@/lib/api-client";
 import { env } from "@/lib/env";
 import { GLOBAL_CONST } from "@/lib/global-const/global-const";
 import { ApiResponseTypeG } from "@/lib/responses/api-response.type";
-import { AlarmReqType, SensorType } from "../types/SensorType";
+import { AlarmReqType, AlarmRespType, SensorType } from "../types/SensorType";
 
 const {
   API: { DASHBOARD_ROUTE },
@@ -24,7 +24,7 @@ export const dashboardService = {
     return resp;
   },
   getAlarmList: (dto: AlarmReqType) => {
-    const resp = apiClient<ApiResponseTypeG<AlarmReqType[]>>(
+    const resp = apiClient<ApiResponseTypeG<AlarmRespType[]>>(
       `${DASHBOARD_ROUTE}`,
       {
         method: POST,
