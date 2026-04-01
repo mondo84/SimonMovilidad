@@ -90,6 +90,22 @@ Luego abrir en el navegador:
 http://localhost:3030 ó el puerto que indicaste en npm run dev -- -p xxxx
 ```
 
+## Para compilar el proyecto y publicarlo:
+
+```bash
+npm run build
+2 Entrar en la carpeta del proyecto y copiar todo ojo "tambien .next", excepto node_modules.
+3 Crear un folder donde se vaya a pegar el proyecto. no importa la ubicacion.
+4 Una vez pegado todos los archivos, entonces se ejecuta el comando ## npm install --production ##
+5 Cuando se terminen de descargar las dependencias de modo produccion se abre un terminal
+  y se ejecuta
+  desde git bash ## PORT=3030 npm start ## para establecer el puerto
+  desde CMD set PORT=3030 && npm start
+  desde PowerShell $env:PORT=3030; npm start
+  universal npx next start -p 3030
+6 Una vez el proyecto está corriendo, la consola lo indica. Abrir el navegador en el puerto indicado.
+```
+
 ## 🏗️ Estructura del proyecto
 
 ```bash
