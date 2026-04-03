@@ -1,8 +1,8 @@
 import {
   AlarmRespType,
-  FuelAlertType,
   SensorType,
 } from "@/modules/dashboard/types/SensorType";
+import { format } from "date-fns";
 import { openDB, IDBPDatabase } from "idb";
 
 const DB_NAME = "iot-db-cache";
@@ -64,7 +64,15 @@ export const getPositions = async (): Promise<SensorType[]> => {
   if (!dbPromise) return [];
 
   const db = await dbPromise;
-  return (await db.getAll(STORE_POSITION)) as SensorType[];
+  const allPositions = (await db.getAll(STORE_POSITION)) as SensorType[];
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  const todayPositions = allPositions.filter((pos) => {
+    const posDate = new Date(pos.Timestamp);
+    return format(posDate, "yyyy-MM-dd") === today;
+  });
+
+  return todayPositions;
 };
 
 export const clearPositions = async () => {
@@ -102,7 +110,16 @@ export const getAlerts = async (): Promise<AlarmRespType[]> => {
   if (!dbPromise) return [];
 
   const db = await dbPromise;
-  return (await db.getAll(STORE_ALERT)) as AlarmRespType[];
+  const allPositions = (await db.getAll(STORE_ALERT)) as AlarmRespType[];
+
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  const todayPositions = allPositions.filter((pos) => {
+    const posDate = new Date(pos.createdAt);
+    return format(posDate, "yyyy-MM-dd") === today;
+  });
+
+  return todayPositions;
 };
 
 export const clearAlerts = async () => {

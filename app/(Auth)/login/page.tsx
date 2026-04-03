@@ -66,12 +66,20 @@ const LoginPage = () => {
       redirect: false,
     });
 
+    // console.log("ERROR: ", result);
     if (result?.error) {
-      const erroObj = JSON.parse(result?.error);
-      setModalCtrl({ open: true });
-      setMsj({ message: erroObj?.message ?? "" });
-      hide();
-      return;
+      try {
+        const erroObj = JSON.parse(result?.error);
+        setModalCtrl({ open: true });
+        setMsj({ message: erroObj?.message ?? "" });
+        hide();
+        return;
+      } catch (err) {
+        hide();
+        setModalCtrl({ open: true });
+        setMsj({ message: "Error desconocido" });
+        return;
+      }
     }
 
     // ==== Success Auth

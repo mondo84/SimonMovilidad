@@ -1,19 +1,21 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
-import * as signalR from "@microsoft/signalr";
+import LineCharJs from "@/app/components/LineCharJs/LineCharJs";
+import { useOfflineSync } from "@/hooks/use-offline-sync";
+import { getPositions, saveAlerts, savePosition } from "@/lib/db";
+import { GLOBAL_CONST } from "@/lib/global-const/global-const";
+import useIsAuthHook from "@/modules/auth/hooks/useAuth";
+import { sensorListMap } from "@/modules/dashboard/hooks/map-sensor-list";
+import { useSensorDataList } from "@/modules/dashboard/hooks/useDashboard";
 import {
   AlarmRespType,
   SensorType,
 } from "@/modules/dashboard/types/SensorType";
-import LineCharJs from "@/app/components/LineCharJs/LineCharJs";
-import { sensorListMap } from "@/modules/dashboard/hooks/map-sensor-list";
-import { useSensorDataList } from "@/modules/dashboard/hooks/useDashboard";
-import { getPositions, saveAlerts, savePosition } from "@/lib/db";
-import useIsAuthHook from "@/modules/auth/hooks/useAuth";
-import { GLOBAL_CONST } from "@/lib/global-const/global-const";
-import { useOfflineSync } from "@/hooks/use-offline-sync";
+import * as signalR from "@microsoft/signalr";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import DatePicker from "@/app/components/DatePicker/DatePicker";
+import { format } from "date-fns";
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
@@ -28,10 +30,16 @@ const DashboardPage = () => {
   const connectionRef = useRef<signalR.HubConnection | null>(null);
   const isStartingRef = useRef(false); // controla el start().
   const isMountedRef = useRef(true);
-  const { data, isSuccess } = useSensorDataList(false);
+
   const [sensorList, setSensorList] = useState<SensorType[]>([]);
-  const [position, setPosition] = useState<[number, number] | null>(null);
   const DATA_SOURCE = sensorList; // data && data.data ? data.data : [];
+
+  const [position, setPosition] = useState<[number, number] | null>(null);
+
+  const today = format(new Date(), "yyyy-MM-dd");
+  const [selectedDate, setSelectedDate] = useState(today);
+  const { data, isSuccess, refetch } = useSensorDataList(selectedDate, false);
+
   useOfflineSync(setPosition, setSensorList);
 
   useEffect(() => {
@@ -161,7 +169,6 @@ const DashboardPage = () => {
   return (
     <div className="grid grid-cols-2 grid-rows-2 h-[calc(100vh-75px)] gap-1">
       <div className="border">
-        {/* <div className="text-sm p-1">Localizacion del Vehiculo</div> */}
         <Map position={position} />
       </div>
       <div className="border p-2 flex flex-col min-h-0">
@@ -176,7 +183,20 @@ const DashboardPage = () => {
       </div>
 
       <div className="border p-2 flex flex-col min-h-0">
-        <div className="text-sm p-1">Registro Historico</div>
+        <div className="flex items-center py-1 justify-between">
+          <div className="text-sm pe-2">Registro Historico</div>
+          <div className="relative !z-2000">
+            <DatePicker
+              onLoadData={(date: string) => {
+                setSelectedDate(date);
+                refetch();
+              }}
+              position="right"
+              sideOffset={15}
+              value={new Date()}
+            />
+          </div>
+        </div>
         <div className="flex-1 min-h-0">
           <div className="w-full h-full flex flex-col">
             <div className="grid grid-cols-7 bg-gray-800 text-white text-sm font-semibold p-2 text-xs">

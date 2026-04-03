@@ -72,8 +72,6 @@ const columns: IColumnConfig[] = [
 
 const AlertsPage = () => {
   const [selectedRow, setSelectedRow] = useState(resetSelected);
-
-  // const { data, mutate, mutateAsync } = useAlarmList();
   const { data, mutate, mutateAsync } = useAlarmList();
   const [offlineData, setOfflineData] = useState<AlarmRespType[]>([]);
 
