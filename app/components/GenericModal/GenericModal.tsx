@@ -30,7 +30,7 @@ const GenericModal = ({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
           className="sm:max-w-sm dark:bg-neutral-900 border-1 border-gray-800 rounded-none p-0 
-        [&>button]:hidden"
+        [&>button]:hidden z-50"
         >
           <DialogHeader className="w-full relative">
             <DialogTitle className="p-3 text-center bg-neutral-950">

@@ -16,6 +16,11 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "@/app/components/DatePicker/DatePicker";
 import { format } from "date-fns";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import ToastAbstract from "@/app/components/ToastCustom/ToastAbstract";
+import { toast as sonnerToast } from "sonner";
+import { env } from "@/lib/env";
+const URL_API = env.swaggerApiClient;
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
@@ -40,7 +45,25 @@ const DashboardPage = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const { data, isSuccess, refetch } = useSensorDataList(selectedDate, false);
 
-  useOfflineSync(setPosition, setSensorList);
+  const toastMsg = (title: string, description: string) => {
+    ToastAbstract({
+      title,
+      description,
+      icon: <InformationCircleIcon className="text-sky-500 size-15" />,
+      button: {
+        label: "Aceptar",
+        onClick: (toastId) => sonnerToast.dismiss(toastId),
+      },
+    });
+  };
+
+  useOfflineSync(setPosition, setSensorList, (status) => {
+    if (status === "offline") {
+      toastMsg("Mensaje del sistema", "Se perdio la conexion");
+    } else {
+      toastMsg("Mensaje del sistema", "En linea");
+    }
+  });
 
   useEffect(() => {
     if (isSuccess && data?.data) {
@@ -53,7 +76,7 @@ const DashboardPage = () => {
 
     // ===================== Actual Position ========================
     if (!navigator.geolocation) {
-      console.warn("Geolocation no soportado");
+      toastMsg("Mensaje del sistema", "Geolocation no soportado");
       return;
     }
 
@@ -70,7 +93,7 @@ const DashboardPage = () => {
     // ====================== Socket =================================
     if (!connectionRef.current) {
       const connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:5010/ws/alerts")
+        .withUrl(`${URL_API}/ws/alerts`)
         .withAutomaticReconnect()
         .build();
 
@@ -143,7 +166,7 @@ const DashboardPage = () => {
     if (session && session?.user.role === "Admin") {
       connection.on(LOW_FUEL_ALERT, async (alarm: AlarmRespType) => {
         await saveAlerts(alarm);
-        alert("Combustible bajo");
+        toastMsg("Mensaje del sistema", "Alerta den combustible bajo");
       });
     }
 

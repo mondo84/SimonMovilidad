@@ -71,9 +71,13 @@ npm install
 Crear un archivo `.env.local` en la raíz del proyecto con las variables necesarias, por ejemplo:
 
 ```env
+(Entorno server)
 NEXTAUTH_SECRET=una_clave_super_larga_y_segura
-SWAGGER_API=http://localhost:5010
 SWAGGER_API_DEV=http://localhost:5134
+SWAGGER_API=http://localhost:5010
+
+(Entorno client)
+NEXT_PUBLIC_SWAGGER_API=http://localhost:5010   => conexion SingnalR.
 ```
 
 ## ▶️ Ejecución del proyecto
