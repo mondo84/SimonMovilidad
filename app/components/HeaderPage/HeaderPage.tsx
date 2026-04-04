@@ -5,6 +5,7 @@ import { signOut } from "next-auth/react";
 import useAuthHook from "@/modules/auth/hooks/useAuth";
 import { MenuListI } from "@/app/interfaces/Menu/MenuList";
 import BackButton from "../BackButton/BackButton";
+import { usePathname } from "next/navigation";
 
 const data: MenuListI[] = [
   {
@@ -122,11 +123,16 @@ const HeaderPage = () => {
     });
   };
 
+  const pathNameMap = usePathname()
+    .split("/")
+    .map((p) => p.charAt(0).toUpperCase() + p.slice(1));
+
   return (
     <>
       <div className="flex items-center bg-black/80 sticky top-0 z-50">
         <div className="h-full px-4 select-none">IOT APP</div>
-        <div className="flex-1 text-left">{isLoged && getMenuList()}</div>
+        <div className="text-left">{isLoged && getMenuList()}</div>
+        <div className="text-left flex-1 h-full ps-5">{pathNameMap}</div>
 
         <div className="ps-4 me-4 flex items-center">
           {isLoged && (

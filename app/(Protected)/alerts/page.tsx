@@ -14,19 +14,27 @@ import { MapPin } from "lucide-react";
 import { AlarmType } from "../../../modules/dashboard/types/AlarmType";
 import { useOfflineSyncAlarm } from "@/hooks/use-offline-sync-alarm";
 import { AlarmRespType } from "@/modules/dashboard/types/SensorType";
+import ToastAbstract from "@/app/components/ToastCustom/ToastAbstract";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { toast as sonnerToast } from "sonner";
+import MessageModal, {
+  typeReqAlarm,
+} from "@/app/components/MessageModal/MessageModal";
 
 const Map = dynamic(() => import("../../components/LeafletMap/LeafletMap"), {
   ssr: false,
 });
 
-type SelectedRow = {
+export type SelectedRow = {
   message: string;
   position: [number, number];
+  vehicle_id?: string;
 };
 
 const resetSelected: SelectedRow = {
   message: "",
   position: [0, 0],
+  vehicle_id: "",
 };
 
 const columns: IColumnConfig[] = [
@@ -72,10 +80,9 @@ const columns: IColumnConfig[] = [
 
 const AlertsPage = () => {
   const [selectedRow, setSelectedRow] = useState(resetSelected);
-
-  // const { data, mutate, mutateAsync } = useAlarmList();
   const { data, mutate, mutateAsync } = useAlarmList();
   const [offlineData, setOfflineData] = useState<AlarmRespType[]>([]);
+  const [open, setOpen] = useState(false);
 
   const today = new Date();
   const [filters, setFilters] = useState({
@@ -86,6 +93,18 @@ const AlertsPage = () => {
     vehicleId: "",
   });
 
+  const toastMsg = (title: string, description: string) => {
+    ToastAbstract({
+      title,
+      description,
+      icon: <InformationCircleIcon className="text-sky-500 size-15" />,
+      button: {
+        label: "Aceptar",
+        onClick: (toastId) => sonnerToast.dismiss(toastId),
+      },
+    });
+  };
+
   useOfflineSyncAlarm(
     mutateAsync,
     {
@@ -94,6 +113,13 @@ const AlertsPage = () => {
       vehicleId: filters.vehicleId,
     },
     setOfflineData,
+    (status) => {
+      if (status === "offline") {
+        toastMsg("Mensaje del sistema", "Se perdio la conexion");
+      } else {
+        toastMsg("Mensaje del sistema", "En linea");
+      }
+    },
   );
 
   useEffect(() => {
@@ -106,12 +132,21 @@ const AlertsPage = () => {
 
   const init = (api: IApi): void => {
     api.on("select-row", (ev) => {
-      const { Lat, Long, Message } = api
+      const { Lat, Long, Message, Vehicle_id } = api
         .getStores()
         .data.getRow(ev.id) as AlarmType;
-      setSelectedRow({ position: [Lat, Long], message: Message });
+      setSelectedRow({
+        position: [Lat, Long],
+        message: Message,
+        vehicle_id: Vehicle_id,
+      });
+    });
+    api.on("open-editor", () => {
+      setOpen(true);
     });
   };
+
+  const handleSaveAlarm = (dto: typeReqAlarm) => {};
 
   return (
     <>
@@ -185,6 +220,12 @@ const AlertsPage = () => {
           </div>
         </div>
       </div>
+      <MessageModal
+        open={open}
+        onClose={() => setOpen(false)}
+        onSave={(saveSelected) => handleSaveAlarm(saveSelected)}
+        selectedRow={selectedRow}
+      />
     </>
   );
 };

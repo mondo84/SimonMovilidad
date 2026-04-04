@@ -17,6 +17,7 @@ export const useOfflineSyncAlarm = (
   mutateAsync: ReturnType<typeof useAlarmList>["mutateAsync"],
   filters: AlarmReqType,
   setOfflineData: (data: AlarmRespType[]) => void,
+  onConnectionChange?: (status: "online" | "offline") => void,
 ) => {
   const { data: sessionData } = useSession();
 
@@ -30,11 +31,12 @@ export const useOfflineSyncAlarm = (
 
     // ====== Sincronizar app con datos del server.
     const handleOffline = async () => {
-      alert("Estas desconectado");
+      onConnectionChange?.("offline");
       await loadOfflineData();
     };
 
     const handleOnline = async () => {
+      onConnectionChange?.("online");
       const resp = await mutateAsync(filters);
       // const resp = await syncApp();
 
@@ -53,8 +55,6 @@ export const useOfflineSyncAlarm = (
           });
         }
       }
-
-      alert("En linea nuevamente");
     };
 
     if (!navigator.onLine) {

@@ -11,14 +11,16 @@ const {
   MESSAGES: { INTERNAL_ERROR, NO_AUTH },
 } = GLOBAL_CONST;
 const URL_API = env.swaggerApi;
+//const URL_API = env.swaggerApiDev;
 
 export const GET = async (req: NextRequest) => {
   try {
     const accessToken = await ValidateToken(req);
+    const date = req.nextUrl.searchParams.get("date");
     const showInactive = req.nextUrl.searchParams.get("showInactive");
 
     const res = await fetch(
-      `${URL_API}/api/sensor?showInactive=${showInactive}`,
+      `${URL_API}/api/sensor?date=${date}&showInactive=${showInactive}`,
       {
         method: req.method,
         headers: {

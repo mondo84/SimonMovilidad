@@ -14,9 +14,9 @@ const {
 } = GLOBAL_CONST;
 
 export const dashboardService = {
-  getAll: (showInactive: boolean) => {
+  getAll: (date: string, showInactive: boolean) => {
     const resp = apiClient<ApiResponseTypeG<SensorType[]>>(
-      `${DASHBOARD_ROUTE}?showInactive=${showInactive}`,
+      `${DASHBOARD_ROUTE}?date=${date}&showInactive=${showInactive}`,
       {
         method: GET,
       },

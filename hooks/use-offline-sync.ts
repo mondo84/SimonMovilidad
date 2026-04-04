@@ -8,6 +8,7 @@ import { syncApp } from "./fetch-util";
 export const useOfflineSync = (
   setPosition: (pos: [number, number]) => void,
   setSensorData: (data: SensorType[]) => void,
+  onConnectionChange?: (status: "online" | "offline") => void,
 ) => {
   const { data: sessionData } = useSession();
 
@@ -24,11 +25,12 @@ export const useOfflineSync = (
     // ====== Sincronizar app con datos del server.
 
     const handleOffline = async () => {
-      alert("Estas desconectado");
-      loadOfflineData();
+      onConnectionChange?.("offline");
+      await loadOfflineData();
     };
 
     const handleOnline = async () => {
+      onConnectionChange?.("online");
       const resp = await syncApp();
       if (resp && resp.success) {
         setSensorData(resp.data);
@@ -50,10 +52,8 @@ export const useOfflineSync = (
           });
         }
 
-        alert("App sincronizada");
+        // alert("App sincronizada");
       }
-
-      alert("En linea nuevamente");
     };
 
     if (!navigator.onLine) {

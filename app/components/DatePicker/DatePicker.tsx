@@ -10,17 +10,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+type positionDatePicket = "right" | "left" | "bottom" | "top";
+
 type DatePickerProps = {
   title?: string;
   onLoadData: (fecha: string) => void;
+  position?: positionDatePicket;
+  sideOffset?: number;
+  value?: Date;
 };
 
 const DatePicker = ({
   title = "Selecciona la fecha",
   onLoadData,
+  position = "bottom",
+  sideOffset = 3,
+  value,
 }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date>(value || new Date());
 
   return (
     <div>
@@ -35,7 +43,11 @@ const DatePicker = ({
             {date ? format(date, "yyyy-MM-dd") : <span>{title}</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent
+          className="w-auto p-0"
+          side={position}
+          sideOffset={sideOffset}
+        >
           <div className="p-2 border-b flex justify-end">
             <Button
               variant="ghost"
