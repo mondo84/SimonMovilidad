@@ -2,21 +2,22 @@ import { apiClient } from "@/lib/api-client";
 import { GLOBAL_CONST } from "@/lib/global-const/global-const";
 import { env } from "@/lib/env";
 import { ApiResponseTypeG } from "@/lib/responses/api-response.type";
-import { typeReqAlarm } from "@/app/components/MessageModal/MessageModal";
+import { AlarmRespType } from "@/modules/dashboard/types/SensorType";
+import { typeReqAlarm } from "../types/all-types";
 
 const {
   API: { ALARM_ROUTE },
 } = env;
 const {
   HTTP: {
-    METHOD: { POST },
+    METHOD: { PUT },
   },
 } = GLOBAL_CONST;
 
 export const alarmService = {
-  createAlarm: (data: typeReqAlarm) =>
-    apiClient<ApiResponseTypeG<typeReqAlarm>>(ALARM_ROUTE, {
-      method: POST,
-      body: data,
+  updateAlarm: (dto: typeReqAlarm) =>
+    apiClient<ApiResponseTypeG<AlarmRespType>>(`${ALARM_ROUTE}`, {
+      method: PUT,
+      body: dto,
     }),
 };
