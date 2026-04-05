@@ -12,7 +12,7 @@ const {
 } = GLOBAL_CONST;
 const URL_API = env.swaggerApi;
 
-export const POST = async (req: NextRequest) => {
+export const PUT = async (req: NextRequest) => {
   try {
     const token = await getToken({
       req,
@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest) => {
     });
 
     const body = await req.json();
-    const response = await fetch(`${URL_API}/api/Users`, {
+    const response = await fetch(`${URL_API}/api/sensor/update/alert`, {
       method: req.method,
       headers: {
         "Content-Type": APPLICATION_JSON,
