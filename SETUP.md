@@ -100,7 +100,7 @@ http://localhost:3030 ó el puerto que indicaste en npm run dev -- -p xxxx
 npm run build
 2 Entrar en la carpeta del proyecto y copiar todo ojo "tambien .next", excepto node_modules.
 3 Crear un folder donde se vaya a pegar el proyecto. no importa la ubicacion.
-4 Una vez pegado todos los archivos, entonces se ejecuta el comando ## npm install --production ##
+4 Una vez pegado todos los archivos, entonces se ejecuta el comando ## npm install --production --omit=dev ##
 5 Cuando se terminen de descargar las dependencias de modo produccion se abre un terminal
   y se ejecuta
   desde git bash ## PORT=3030 npm start ## para establecer el puerto
